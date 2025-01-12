@@ -11,7 +11,8 @@ export const fetchPrefectureByPostalCode: PostalCodeApi = async (postalCode) => 
     const response = await axios.get<PostalCodeResponse>(
       `https://api.zipaddress.net/?zipcode=${postalCode}`
     );
-    return response.data.address1;
+    const prefecture = response.data.address1;
+    return prefecture;
   } catch (error) {
     throw new Error('郵便番号の検索に失敗しました');
   }
