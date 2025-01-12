@@ -1,11 +1,11 @@
 import { REGION_GROUPS, RegionGroup } from './regions';
-import { SHIPPING_FEES } from './shipping';
+import { SHIPPING_FEES, ShippingFeeMap } from './shipping';
 import { fetchPrefectureByPostalCode } from './api';
 
 export async function getFeeByPostalCode(postalCode: string): Promise<number> {
   const prefecture = await getPrefecture(postalCode);
   const region = getRegionGroup(prefecture);
-  return getFee(region);
+  return getFee(region, SHIPPING_FEES);
 }
 
 async function getPrefecture(postalCode: string): Promise<string> {
@@ -34,19 +34,19 @@ function getRegionGroup(prefecture: string): RegionGroup {
   return foundRegion[0];
 }
 
-function getFee(region: RegionGroup): number {
+function getFee(region: RegionGroup, feeMap: ShippingFeeMap): number {
   switch (region) {
     case 'HOKKAIDO':
-      return SHIPPING_FEES.HOKKAIDO;
+      return feeMap.HOKKAIDO;
     case 'OKINAWA':
-      return SHIPPING_FEES.OKINAWA;
+      return feeMap.OKINAWA;
     case 'KYUSHU':
-      return SHIPPING_FEES.KYUSHU;
+      return feeMap.KYUSHU;
     case 'KANTO':
     case 'TOHOKU':
     case 'CHUBU':
     case 'CHUGOKU':
-      return SHIPPING_FEES.KANTO_TOHOKU_CHUBU_CHUGOKU;
+      return feeMap.KANTO_TOHOKU_CHUBU_CHUGOKU;
     default:
       throw new Error('不明な地域区分です');
   }
